@@ -1,4 +1,5 @@
 //image
+(function() {
 var baseImages = [
   "img/products/p1.avif",
   "img/products/p2.avif",
@@ -57,7 +58,6 @@ var interior = [
 
 var prices = ["₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999"];
 
-
 var products=document.createElement("div");
 products.style.display='flex';
 products.style.flexWrap='wrap';
@@ -82,8 +82,6 @@ for(let i=0;i<baseImages.length;i++){
 
   productItems.appendChild(productImage);
 
-  var productDetails=document.createElement("div");
-
   var price=document.createElement("p");
   price.textContent=prices[i];
   price.style.fontSize="14px";
@@ -91,7 +89,7 @@ for(let i=0;i<baseImages.length;i++){
   price.style.backgroundColor="#fff";
   price.style.width="50%";
 
-
+  var productDetails=document.createElement("div");
   detail=document.createElement("p");
   detail.textContent=shoesName[i];
   detail.style.fontSize="14px";
@@ -140,12 +138,6 @@ for(let i=0;i<baseImages.length;i++){
     });
   })(productImage);
 
-  (function (currentProductItems){
-    productItems.addEventListener('click',function(){
-      window.location.href = interior[i];
-    })
-  })(productItems);
-
 
 (function (currentItem) {
     cart.addEventListener('click', function (event) {
@@ -175,7 +167,7 @@ for(let i=0;i<baseImages.length;i++){
       if (emptyBagMessage) {
           emptyBagMessage.remove();
       }
-     
+
       var pp = document.createElement('div');
 
       pp.style.display = 'flex';
@@ -216,7 +208,7 @@ for(let i=0;i<baseImages.length;i++){
 
 
       deleteButton.addEventListener('click', function (event) {
-          pp.remove();
+          productPP.remove();
       });
 
       document.querySelector(".cart .cart-content .products").appendChild(pp);
@@ -225,6 +217,15 @@ for(let i=0;i<baseImages.length;i++){
       productPP.appendChild(imagePP);
       productPP.appendChild(imagePPdetail);
       productPP.appendChild(deleteButton);
+
+      deleteButton.addEventListener('click', function (event) {
+        productPP.remove();
+        
+        // Call updateGross() after deleting an item
+        updateGross();
+      });
+
+      updateGross();
   })
 })(productImage);
 
@@ -233,12 +234,13 @@ function calculateGross() {
   var total = 0;
   var cartItems = document.querySelectorAll(".cart .cart-content .products .product");
   cartItems.forEach(function(item) {
-    var productId = item.dataset.productId;
-    var price = parseFloat(prices[productId].replace(/[^0-9.]/g, '')); // Retrieve price from the prices array
+    var productId = parseInt(item.dataset.productId); // Convert productId to integer
+    var price = parseFloat(prices[productId].replace(/[^0-9.]/g, '')); // Parse price to float
     total += price;
   });
   return total.toFixed(2); // Round to 2 decimal places
 }
+
 
 // Update gross amount in the cart
 function updateGross() {
@@ -253,27 +255,13 @@ function updateGross() {
     document.querySelector('.cart .cart-content').appendChild(grossDisplay);
   }
 }
-
-// Function to update gross amount when an item is deleted
-function updateGrossOnDelete(price) {
-  var grossDisplay = document.querySelector('.cart .cart-content .gross');
-  if (grossDisplay) {
-    var currentGross = parseFloat(grossDisplay.textContent.replace(/[^0-9.]/g, ''));
-    var newGross = (currentGross - price).toFixed(2);
-    grossDisplay.textContent = "Gross Amount: ₹" + newGross;
+  
+  function getRandomSize() {
+      var sizes = ["US 7", "US 8", "US 9", "US 10", "US 11"];
+      return sizes[Math.floor(Math.random() * sizes.length)];
   }
 }
-
-// Call updateGross function whenever an item is added or removed from the cart
-(function() {
-  var cartContent = document.querySelector(".cart .cart-content .products");
-  cartContent.addEventListener('DOMNodeInserted', updateGross);
-  cartContent.addEventListener('DOMNodeRemoved', function(event) {
-    if (event.target.classList.contains('product')) {
-      var price = parseFloat(event.target.dataset.price.replace(/[^0-9.]/g, ''));
-      updateGrossOnDelete(price);
-    }
-  });
+  for (let i = 0; i < baseImages.length; i++) {
+      createProduct(baseImages[i], shoesName[i], discription[i], colors[i], prices[i], imageURL[i]);
+  }
 })();
-
-}
