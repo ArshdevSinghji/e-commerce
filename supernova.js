@@ -56,8 +56,7 @@ var colors = [
   "4 colours"
 ];
 
-var prices = [120, 150, 100, 180, 200, 180, 160, 140];
-
+var prices = ["₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999", "₹9,999"];
 
 var products=document.createElement("div");
 products.style.display='flex';
@@ -83,6 +82,13 @@ for(let i=0;i<baseImages.length;i++){
 
   productItems.appendChild(productImage);
 
+  var price=document.createElement("p");
+  price.textContent=prices[i];
+  price.style.fontSize="14px";
+  price.style.marginTop="-1.5rem";
+  price.style.backgroundColor="#fff";
+  price.style.width="50%";
+
   var productDetails=document.createElement("div");
   detail=document.createElement("p");
   detail.textContent=shoesName[i];
@@ -106,6 +112,7 @@ for(let i=0;i<baseImages.length;i++){
   cart.style.margin='8px';
   cart.style.cursor='pointer';
 
+  productDetails.appendChild(price);
   productDetails.appendChild(detail);
   productDetails.appendChild(dis);
   productDetails.appendChild(colours);
@@ -201,7 +208,7 @@ for(let i=0;i<baseImages.length;i++){
 
 
       deleteButton.addEventListener('click', function (event) {
-          productPP.remove();
+          pp.remove();
       });
 
       document.querySelector(".cart .cart-content .products").appendChild(pp);
@@ -210,9 +217,44 @@ for(let i=0;i<baseImages.length;i++){
       productPP.appendChild(imagePP);
       productPP.appendChild(imagePPdetail);
       productPP.appendChild(deleteButton);
+
+      deleteButton.addEventListener('click', function (event) {
+        productPP.remove();
+        
+        // Call updateGross() after deleting an item
+        updateGross();
+      });
+
+      updateGross();
   })
 })(productImage);
 
+// Function to calculate gross amount
+function calculateGross() {
+  var total = 0;
+  var cartItems = document.querySelectorAll(".cart .cart-content .products .product");
+  cartItems.forEach(function(item) {
+    var productId = parseInt(item.dataset.productId); // Convert productId to integer
+    var price = parseFloat(prices[productId].replace(/[^0-9.]/g, '')); // Parse price to float
+    total += price;
+  });
+  return total.toFixed(2); // Round to 2 decimal places
+}
+
+
+// Update gross amount in the cart
+function updateGross() {
+  var grossAmount = calculateGross();
+  var grossDisplay = document.querySelector('.cart .cart-content .gross');
+  if (grossDisplay) {
+    grossDisplay.textContent = "Gross Amount: ₹" + grossAmount;
+  } else {
+    grossDisplay = document.createElement('p');
+    grossDisplay.textContent = "Gross Amount: ₹" + grossAmount;
+    grossDisplay.classList.add('gross');
+    document.querySelector('.cart .cart-content').appendChild(grossDisplay);
+  }
+}
   
   function getRandomSize() {
       var sizes = ["US 7", "US 8", "US 9", "US 10", "US 11"];

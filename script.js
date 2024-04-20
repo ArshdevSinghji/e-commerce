@@ -208,7 +208,7 @@ for(let i=0;i<baseImages.length;i++){
 
 
       deleteButton.addEventListener('click', function (event) {
-          productPP.remove();
+          pp.remove();
       });
 
       document.querySelector(".cart .cart-content .products").appendChild(pp);
