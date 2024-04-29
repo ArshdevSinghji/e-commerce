@@ -53,7 +53,7 @@ products.style.flexWrap='wrap';
 products.style.justifyContent="space-between";
 products.style.marginTop="10px";
 
-document.querySelector('.body').appendChild(products);
+document.querySelector('.bodyThree').appendChild(products);
 
 for(let i=0;i<baseImages.length;i++){
 
